@@ -35,6 +35,21 @@ program
   })
 
 program
+  .command('manifest')
+  .argument('<gateway>', 'hostname of a built gateway, e.g. example.com')
+  .option('--out <dir>', 'base directory holding built gateways', 'gateways')
+  .option('--endpoint <url>', 'public MCP endpoint to advertise, e.g. https://gateway.example.com/example.com/mcp')
+  .description('Generate agents.json and llms.txt for the site owner to host')
+  .action(async (gateway: string, opts: { out: string; endpoint?: string }) => {
+    const { writeManifests } = await import('./manifest.js')
+    const { dirname } = await import('node:path')
+    const { resolveGatewayDb } = await import('./server/serve.js')
+    const dir = dirname(resolveGatewayDb(opts.out, gateway))
+    writeManifests(dir, opts.endpoint ? { endpoint: opts.endpoint } : {})
+    console.log(`wrote ${dir}/agents.json and ${dir}/llms.txt`)
+  })
+
+program
   .command('serve')
   .argument('[gateway]', 'hostname of a built gateway, e.g. example.com; omit with --http to serve all')
   .option('--out <dir>', 'base directory holding built gateways', 'gateways')
