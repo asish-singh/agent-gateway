@@ -40,6 +40,12 @@ node dist/cli.js serve --http 8080 --token <secret>
 
 Endpoints live at `/<hostname>/mcp`, and `/healthz` lists what is being served. See [docs/deploy.md](docs/deploy.md) for putting this on a VPS behind HTTPS.
 
+Finally, generate the discovery files the site owner hosts at their own domain (llms.txt at the site root and agents.json under /.well-known/) so visiting agents can find the gateway.
+
+```bash
+node dist/cli.js manifest example.com --endpoint https://gateway.example.com/example.com/mcp
+```
+
 The full version one specification lives in [SPEC.md](SPEC.md). Design decisions are recorded in [docs/adr/](docs/adr/) and changes in [CHANGELOG.md](CHANGELOG.md).
 
 ## Development

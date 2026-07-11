@@ -6,6 +6,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ### Added
 
+- `agent-gateway manifest <hostname> --endpoint <url>` generates the agents.json and llms.txt discovery files a site owner hosts at their own domain to advertise the gateway to visiting agents (milestone 4, issue #4).
 - `agent-gateway serve --http <port>` serves every built gateway over streamable HTTP from one process, routed by path (`/<hostname>/mcp`), with optional bearer token auth, a `/healthz` endpoint, and stateless request handling (milestone 3, issue #3). Deployment guide in docs/deploy.md.
 - `agent-gateway serve <hostname>` serves a built gateway as an MCP server over stdio, exposing search_site, get_page, list_sections, and get_site_info with descriptions naming the actual site (milestone 2, issue #2). Tested through a real MCP client connection.
 - `agent-gateway build <url>` crawls a website (sitemap first, link following as fallback), respects robots.txt with a polite default rate of one request per second, extracts main content to markdown, and stores everything in one SQLite file per site with an FTS5 full text index (milestone 1, issue #1).
