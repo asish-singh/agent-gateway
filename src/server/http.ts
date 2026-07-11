@@ -70,14 +70,32 @@ export function startHttpServer(options: HttpServeOptions): { server: Server; ga
   async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const url = new URL(req.url ?? '/', 'http://localhost')
 
-    if (url.pathname === '/healthz') {
+    const pathname = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, '') : url.pathname
+
+    if (pathname === '/healthz') {
       res.writeHead(200, { 'content-type': 'application/json' })
       res.end(JSON.stringify({ ok: true, gateways: [...stores.keys()] }))
       return
     }
 
-    const match = /^\/([^/]+)\/mcp$/.exec(url.pathname)
-    if (!match) return deny(res, 404, 'not found; MCP endpoints live at /<hostname>/mcp')
+    if (pathname === '/') {
+      res.writeHead(200, { 'content-type': 'application/json' })
+      res.end(
+        JSON.stringify(
+          {
+            service: 'agent-gateway',
+            note: 'This is an MCP API for AI assistants, not a website. Connect an MCP client over streamable HTTP to one of the endpoints below.',
+            endpoints: [...stores.keys()].map((g) => `/${g}/mcp`),
+          },
+          null,
+          2,
+        ),
+      )
+      return
+    }
+
+    const match = /^\/([^/]+)\/mcp$/.exec(pathname)
+    if (!match) return deny(res, 404, `not found; MCP endpoints live at /<hostname>/mcp, currently ${[...stores.keys()].map((g) => `/${g}/mcp`).join(' ')}`)
     const store = stores.get(match[1] as string)
     if (!store) return deny(res, 404, `no gateway named ${match[1]}`)
 

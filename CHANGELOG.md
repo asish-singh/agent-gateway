@@ -19,3 +19,4 @@ All notable changes to this project are recorded here. The format follows [Keep 
 ### Changed
 
 - Switched from better-sqlite3 to the SQLite driver built into Node (node:sqlite), removing all native dependencies so gateways install on restricted shared hosting. Requires Node 22.13 or newer. See ADR 0005.
+- The HTTP server now tolerates trailing slashes on MCP paths, lists the available endpoints in 404 responses, and answers the root path with a plain explanation and the endpoint list.

@@ -56,6 +56,22 @@ describe('gateway HTTP server', () => {
     expect((await res.json()).gateways).toContain('example-studio.test')
   })
 
+  it('tolerates a trailing slash on the MCP path', async () => {
+    const res = await fetch(`${baseUrl}/example-studio.test/mcp/`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'ping', id: 1 }),
+    })
+    expect(res.status).toBe(401)
+  })
+
+  it('explains itself on the root path with the endpoint list', async () => {
+    const res = await fetch(`${baseUrl}/`)
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body.endpoints).toContain('/example-studio.test/mcp')
+  })
+
   it('rejects requests without the bearer token', async () => {
     const res = await fetch(`${baseUrl}/example-studio.test/mcp`, {
       method: 'POST',
