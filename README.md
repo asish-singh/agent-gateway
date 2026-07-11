@@ -8,4 +8,18 @@ This is the fixing half of a funnel that starts with the [agent-readiness-audito
 
 ## How to use
 
-Not built yet. The version one specification lives in [SPEC.md](SPEC.md).
+The crawler and index (milestone 1) work today. The MCP server itself is next.
+
+```bash
+npm install
+npm run build
+node dist/cli.js build https://example.com
+```
+
+That produces `gateways/example.com/` containing `index.sqlite` (the searchable content index) and `crawl-report.json` (what was crawled, what was skipped, and why). Run `node dist/cli.js refresh https://example.com` to rebuild it later.
+
+The full version one specification lives in [SPEC.md](SPEC.md). Design decisions are recorded in [docs/adr/](docs/adr/) and changes in [CHANGELOG.md](CHANGELOG.md).
+
+## Development
+
+`npm test` runs the test suite against a local fixture website, so tests never touch the network. `npm run lint` and `npm run typecheck` keep the code honest, and CI runs all three on every push and pull request.
