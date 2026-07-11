@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3'
+import { DatabaseSync } from 'node:sqlite'
 import type { CrawlReport, ExtractedPage, SiteInfo } from '../types.js'
 
 export interface SearchHit {
@@ -17,13 +17,15 @@ export interface SectionSummary {
 /**
  * One SQLite file per site. Pages live in a plain table; an external-content
  * FTS5 table provides full text search over title, headings, and body.
+ * Uses the SQLite build that ships inside Node (node:sqlite), so gateways
+ * run anywhere Node 22.13+ runs, with no native compilation at install time.
  */
 export class GatewayStore {
-  private db: Database.Database
+  private db: DatabaseSync
 
   constructor(path: string) {
-    this.db = new Database(path)
-    this.db.pragma('journal_mode = WAL')
+    this.db = new DatabaseSync(path)
+    this.db.exec('PRAGMA journal_mode = WAL')
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS pages (
         id INTEGER PRIMARY KEY,
@@ -44,15 +46,19 @@ export class GatewayStore {
     const insert = this.db.prepare(
       'INSERT INTO pages (url, title, description, headings, markdown) VALUES (?, ?, ?, ?, ?)',
     )
-    this.db.transaction(() => {
+    this.db.exec('BEGIN')
+    try {
       this.db.exec("DELETE FROM pages; INSERT INTO pages_fts(pages_fts) VALUES('delete-all');")
+      const insertFts = this.db.prepare('INSERT INTO pages_fts(rowid, title, headings, markdown) VALUES (?, ?, ?, ?)')
       for (const p of pages) {
         const { lastInsertRowid } = insert.run(p.url, p.title, p.description, p.headings.join('\n'), p.markdown)
-        this.db
-          .prepare('INSERT INTO pages_fts(rowid, title, headings, markdown) VALUES (?, ?, ?, ?)')
-          .run(lastInsertRowid, p.title, p.headings.join('\n'), p.markdown)
+        insertFts.run(lastInsertRowid, p.title, p.headings.join('\n'), p.markdown)
       }
-    })()
+      this.db.exec('COMMIT')
+    } catch (err) {
+      this.db.exec('ROLLBACK')
+      throw err
+    }
   }
 
   setMeta(key: string, value: unknown): void {
@@ -100,7 +106,7 @@ export class GatewayStore {
          FROM pages_fts JOIN pages p ON p.id = pages_fts.rowid
          WHERE pages_fts MATCH ? ORDER BY rank LIMIT ?`,
       )
-      .all(ftsQuery, limit) as SearchHit[]
+      .all(ftsQuery, limit) as unknown as SearchHit[]
     return rows
   }
 

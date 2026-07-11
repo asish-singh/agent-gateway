@@ -15,3 +15,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 - Site basics extraction (name, description, contact details, key pages) stored for the future `get_site_info` tool.
 - Test suite with a local fixture website so tests never touch the network, plus lint, typecheck, and CI on every push and pull request.
 - Architecture decision records in `docs/adr/`.
+
+### Changed
+
+- Switched from better-sqlite3 to the SQLite driver built into Node (node:sqlite), removing all native dependencies so gateways install on restricted shared hosting. Requires Node 22.13 or newer. See ADR 0005.
