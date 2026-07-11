@@ -34,6 +34,16 @@ program
     console.log(JSON.stringify({ dir: result.dir, pages: result.report.pagesCrawled }, null, 2))
   })
 
+program
+  .command('serve')
+  .argument('<gateway>', 'hostname of a built gateway, e.g. example.com')
+  .option('--out <dir>', 'base directory holding built gateways', 'gateways')
+  .description('Serve a built gateway as an MCP server over stdio')
+  .action(async (gateway: string, opts: { out: string }) => {
+    const { resolveGatewayDb, serveStdio } = await import('./server/serve.js')
+    await serveStdio(resolveGatewayDb(opts.out, gateway))
+  })
+
 program.parseAsync().catch((err) => {
   console.error(err instanceof Error ? err.message : err)
   process.exit(1)

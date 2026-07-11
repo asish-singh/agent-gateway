@@ -8,7 +8,7 @@ This is the fixing half of a funnel that starts with the [agent-readiness-audito
 
 ## How to use
 
-The crawler and index (milestone 1) work today. The MCP server itself is next.
+The crawler, the index, and the local MCP server work today. Remote hosting is next.
 
 ```bash
 npm install
@@ -17,6 +17,20 @@ node dist/cli.js build https://example.com
 ```
 
 That produces `gateways/example.com/` containing `index.sqlite` (the searchable content index) and `crawl-report.json` (what was crawled, what was skipped, and why). Run `node dist/cli.js refresh https://example.com` to rebuild it later.
+
+Then serve it as an MCP server:
+
+```bash
+node dist/cli.js serve example.com
+```
+
+To use it from Claude Code, register it once and start asking questions about the site:
+
+```bash
+claude mcp add example-gateway -- node /path/to/agent-gateway/dist/cli.js serve example.com
+```
+
+The server exposes four tools, search_site, get_page, list_sections, and get_site_info.
 
 The full version one specification lives in [SPEC.md](SPEC.md). Design decisions are recorded in [docs/adr/](docs/adr/) and changes in [CHANGELOG.md](CHANGELOG.md).
 
