@@ -5,7 +5,7 @@ Turn any existing website into a working MCP server so AI assistants can search 
 ## Status
 
 - Started: 2026-07-11
-- Current state: version 0.1.0 released, crawler, stdio and HTTP MCP server, and manifest generation all working. Remaining spec item, deploy a gateway to the VPS and run the before and after audit.
+- Current state: version 0.1.0 released and deployed. The first live gateway serves asishsingh.in at https://gateway.asishsingh.in/asishsingh.in/mcp (open access, no token yet). All spec milestones done.
 
 ## Goal
 

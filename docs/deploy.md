@@ -26,3 +26,14 @@ claude mcp add example-remote --transport http https://gateway.example.com/examp
 From claude.ai, add a custom connector with the same URL and header.
 
 `GET /healthz` lists the gateways a running server is holding, useful as an uptime probe.
+
+## Hostinger shared hosting notes (how the first real deployment was done)
+
+No VPS is needed. Hostinger Premium hosting runs Node apps directly.
+
+1. Create a subdomain for the gateway (for example gateway.asishsingh.in).
+2. Bundle the app for upload, src, tsconfig.json, package.json, package-lock.json, the built gateways folder, and a server.mjs entry file that reads process.env.PORT and binds 0.0.0.0.
+3. Pin the Node version by setting engines.node to 24 in the bundle package.json, the platform reads it during auto detection.
+4. Upload with the Hostinger deploy tooling, the platform runs npm install and npm run build, then starts the entry file. HTTPS is automatic.
+
+The live proof runs at https://gateway.asishsingh.in/asishsingh.in/mcp with /healthz as the probe. This works because the store uses node:sqlite (ADR 0005), nothing needs compiling at install time.
