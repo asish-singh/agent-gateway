@@ -5,7 +5,7 @@ Turn any existing website into a working MCP server so AI assistants can search 
 ## Status
 
 - Started: 2026-07-11
-- Current state: spec written in SPEC.md, build not started
+- Current state: version 0.1.0 released, crawler, stdio and HTTP MCP server, and manifest generation all working. Remaining spec item, deploy a gateway to the VPS and run the before and after audit.
 
 ## Goal
 
@@ -13,7 +13,7 @@ A product Asish can sell through his AI SEO practice. Point it at a client's web
 
 ## How to run it
 
-Nothing to run yet. Read SPEC.md first.
+See the README, npm install, npm run build, then node dist/cli.js build <url> and node dist/cli.js serve <hostname>. npm test runs the suite.
 
 ## Notes for Claude
 
