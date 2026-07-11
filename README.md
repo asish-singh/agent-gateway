@@ -32,6 +32,14 @@ claude mcp add example-gateway -- node /path/to/agent-gateway/dist/cli.js serve 
 
 The server exposes four tools, search_site, get_page, list_sections, and get_site_info.
 
+For remote use, one process can serve every built gateway over HTTP, with optional bearer token protection.
+
+```bash
+node dist/cli.js serve --http 8080 --token <secret>
+```
+
+Endpoints live at `/<hostname>/mcp`, and `/healthz` lists what is being served. See [docs/deploy.md](docs/deploy.md) for putting this on a VPS behind HTTPS.
+
 The full version one specification lives in [SPEC.md](SPEC.md). Design decisions are recorded in [docs/adr/](docs/adr/) and changes in [CHANGELOG.md](CHANGELOG.md).
 
 ## Development

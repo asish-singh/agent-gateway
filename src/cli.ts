@@ -36,10 +36,29 @@ program
 
 program
   .command('serve')
-  .argument('<gateway>', 'hostname of a built gateway, e.g. example.com')
+  .argument('[gateway]', 'hostname of a built gateway, e.g. example.com; omit with --http to serve all')
   .option('--out <dir>', 'base directory holding built gateways', 'gateways')
-  .description('Serve a built gateway as an MCP server over stdio')
-  .action(async (gateway: string, opts: { out: string }) => {
+  .option('--http <port>', 'serve over HTTP on this port instead of stdio')
+  .option('--host <host>', 'HTTP bind address', '127.0.0.1')
+  .option('--token <token>', 'require this bearer token on HTTP requests (or set AGENT_GATEWAY_TOKEN)')
+  .description('Serve built gateways as MCP servers, stdio for one site or HTTP for many')
+  .action(async (gateway: string | undefined, opts: { out: string; http?: string; host: string; token?: string }) => {
+    if (opts.http) {
+      const { startHttpServer } = await import('./server/http.js')
+      const token = opts.token ?? process.env['AGENT_GATEWAY_TOKEN']
+      const { gateways } = startHttpServer({
+        baseDir: opts.out,
+        port: Number(opts.http),
+        host: opts.host,
+        ...(token ? { token } : {}),
+        ...(gateway ? { gateways: [gateway.includes('://') ? new URL(gateway).hostname : gateway] } : {}),
+      })
+      console.error(
+        `agent-gateway serving ${gateways.length} gateway(s) on http://${opts.host}:${opts.http}, endpoints ${gateways.map((g) => `/${g}/mcp`).join(' ')}${token ? ', bearer token required' : ', open access'}`,
+      )
+      return
+    }
+    if (!gateway) throw new Error('a gateway hostname is required for stdio mode')
     const { resolveGatewayDb, serveStdio } = await import('./server/serve.js')
     await serveStdio(resolveGatewayDb(opts.out, gateway))
   })
