@@ -1,13 +1,16 @@
 #!/usr/bin/env node
+import { createRequire } from 'node:module'
 import { Command } from 'commander'
 import { buildGateway } from './build.js'
+
+const { version } = createRequire(import.meta.url)('../package.json') as { version: string }
 
 const program = new Command()
 
 program
   .name('mcp-site-gateway')
   .description('Turn any existing website into a working MCP server so AI assistants can search and use it, not just read it.')
-  .version('0.1.0')
+  .version(version)
 
 program
   .command('build')

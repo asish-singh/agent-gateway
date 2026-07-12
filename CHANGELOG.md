@@ -2,6 +2,12 @@
 
 All notable changes to this project are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses semantic versioning.
 
+## [0.2.1] - 2026-07-12
+
+### Fixed
+
+- `--version` now reads the real package version instead of a hardcoded string that had gone stale.
+
 ## [0.2.0] - 2026-07-12
 
 ### Changed

@@ -1,6 +1,6 @@
 {
   "name": "mcp-site-gateway",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Turn any existing website into a working MCP server so AI assistants can search and use it, not just read it.",
   "main": "index.js",
   "scripts": {
