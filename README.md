@@ -6,9 +6,9 @@ Most websites were built for human eyes. AI assistants can read them at best, bu
 
 It is the fixing half of a funnel that starts with the [agent-readiness-auditor](https://github.com/asish-singh/agent-readiness-auditor) (which grades sites) and the [Agentic Web Index](https://asishsingh.in/agentic-web-index/) (which ranks 200 of them).
 
-## Try a live gateway first
+## Try a live gateway first (one minute, nothing to install)
 
-A gateway built with this tool runs in production around [asishsingh.in](https://asishsingh.in). Connect to it in one minute and see what your own site could offer.
+Two gateways built with this tool run in production, serving [asishsingh.in](https://asishsingh.in) and [freeyoutubetranscribe.com](https://freeyoutubetranscribe.com) from one process. Connect to one and see what your own site could offer.
 
 In Claude Code:
 
@@ -16,57 +16,99 @@ In Claude Code:
 claude mcp add asish --transport http https://gateway.asishsingh.in/asishsingh.in/mcp
 ```
 
-On Claude.ai, open Settings, then Connectors, then Add custom connector, and paste the same address. Cursor and Windsurf accept it as a remote MCP server URL in their settings. Then ask the assistant anything about the site and watch it query instead of scrape.
+On Claude.ai, open Settings, then Connectors, then Add custom connector, and paste the same address. Cursor and Windsurf accept it as a remote MCP server URL in their settings.
+
+Then ask the assistant something like "what does this site say about the Agentic Web Index?" and watch it call `search_site` and `get_page` instead of scraping.
 
 ## Build a gateway for your own site
 
-You need [Node.js](https://nodejs.org) 20 or newer. Then:
+### What you need
+
+- A computer with a terminal (Terminal on Mac, PowerShell on Windows).
+- [Node.js](https://nodejs.org) 20 or newer. Check with `node --version`. If that prints an error or a lower number, install the LTS version from nodejs.org first.
+- [Git](https://git-scm.com). Check with `git --version`.
+
+No programming knowledge is needed, every step below is copy and paste, and each one says what you should see.
+
+### Step 1, get the tool (once)
 
 ```bash
-# 1. Get the tool (once)
 git clone https://github.com/asish-singh/agent-gateway
 cd agent-gateway
 npm install
 npm run build
+```
 
-# 2. Build a gateway for your site
+This takes a minute or two. Warnings are fine, it worked if the last command finishes without a message containing `error`.
+
+### Step 2, build a gateway for your site
+
+Replace `example.com` with your website in every command from here on.
+
+```bash
 node dist/cli.js build https://example.com
 ```
 
-The build crawls your site politely and produces `gateways/example.com/` containing `index.sqlite` (the searchable content index) and `crawl-report.json` (what was crawled, what was skipped, and why). When your site changes, rebuild with `node dist/cli.js refresh https://example.com`.
+This crawls your site politely (it respects your robots.txt) and can take a few minutes for a large site. It worked if it ends by printing a small summary like:
 
-```bash
-# 3. Serve it and test locally
-node dist/cli.js serve example.com
+```
+{ "dir": "gateways/example.com", "pages": 42, "skipped": 3 }
 ```
 
-To test from Claude Code, register the local server once and start asking questions about the site:
+Your site's searchable index now lives in the `gateways/example.com/` folder, alongside `crawl-report.json`, which lists every page visited or skipped and why.
+
+### Step 3, connect it to Claude and test
+
+Run this from inside the `agent-gateway` folder:
 
 ```bash
-claude mcp add example-gateway -- node /path/to/agent-gateway/dist/cli.js serve example.com
+claude mcp add example-gateway -- node "$PWD/dist/cli.js" serve example.com
 ```
 
-Every gateway exposes four tools to the connected assistant, `search_site` (full text search), `get_page` (clean content of one page), `list_sections` (site structure), and `get_site_info` (business basics).
+Now ask Claude Code a question about your site, for example "using example-gateway, what does my site say about pricing?" You should see it call tools named `search_site` or `get_page` and answer from your actual pages. That's the whole product working.
+
+Every gateway exposes four tools, `search_site` (full text search), `get_page` (clean content of one page), `list_sections` (site structure), and `get_site_info` (business basics).
+
+### Step 4, keep it fresh
+
+When your website changes, update the index with:
+
+```bash
+node dist/cli.js refresh https://example.com
+```
 
 ## Put it on the internet
 
-Local serving stops when your computer sleeps. For an always on gateway, run it on any small server. One process serves every gateway you have built:
+Everything so far runs only while your computer is awake. For a gateway that AI assistants can reach at any time, run the same tool on a small server:
 
 ```bash
 node dist/cli.js serve --http 8080 --token <secret>
 ```
 
-Endpoints live at `/<hostname>/mcp`, `/healthz` lists what is being served, and the token flag is optional bearer protection for private gateways. [docs/deploy.md](docs/deploy.md) walks through a VPS setup behind HTTPS step by step.
+One process serves every gateway you have built. You should see a line like:
+
+```
+agent-gateway serving 2 gateway(s) on http://127.0.0.1:8080, endpoints /example.com/mcp /other.com/mcp
+```
+
+Each site's endpoint is `/<hostname>/mcp`, `/healthz` lists what is being served (useful as an uptime check), and the token flag is optional bearer protection for private gateways. [docs/deploy.md](docs/deploy.md) walks through two real hosting setups step by step, a VPS behind HTTPS and Hostinger shared hosting, the latter is how the live gateways above are deployed.
 
 ## Help agents find it
 
-Visiting agents look for discovery files at your domain. Generate them with:
+A gateway nobody can discover does nothing. Generate the two discovery files:
 
 ```bash
 node dist/cli.js manifest example.com --endpoint https://gateway.example.com/example.com/mcp
 ```
 
-Upload the result to your website, `llms.txt` at the site root and `agents.json` under `/.well-known/`. They are the sign on the door telling AI agents a proper entrance exists and where it is.
+This writes `llms.txt` and `agents.json` into your `gateways/example.com/` folder. Upload them to your website, `llms.txt` at the site root (so it is reachable at `example.com/llms.txt`) and `agents.json` in a folder called `.well-known` (reachable at `example.com/.well-known/agents.json`). They are the sign on the door telling AI agents a proper entrance exists and where it is. Both live sites above publish both files if you want to see real examples.
+
+## If something goes wrong
+
+- **`node: command not found`** Node.js is not installed or the terminal was opened before installing. Install from nodejs.org, then open a new terminal window.
+- **The build finds 0 pages.** Your site may block automated visitors (common with aggressive bot protection). Check `gateways/<your-site>/crawl-report.json` for the reason, and run `npx agent-readiness-auditor <your-site>` to see your site's stance.
+- **Claude does not list the gateway.** Run `claude mcp list` to confirm it registered. If you moved the `agent-gateway` folder after step 3, remove and re add it, the registration stores the folder's path.
+- **Anything else.** Open an issue with your `crawl-report.json` attached, real reports are how the crawler improves.
 
 ## Project documents
 
