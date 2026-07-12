@@ -38,7 +38,7 @@ export function renderManifests(dbPath: string, options: ManifestOptions = {}): 
         contact: info.contact,
         keyPages: info.keyPages,
         contentIndex: { pages: store.pageCount(), lastCrawled: report.crawledAt },
-        generator: 'agent-gateway (https://github.com/asish-singh/agent-gateway)',
+        generator: 'mcp-site-gateway (https://github.com/asish-singh/mcp-site-gateway)',
       },
       null,
       2,

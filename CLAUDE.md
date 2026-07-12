@@ -1,11 +1,11 @@
-# Project: agent-gateway
+# Project: mcp-site-gateway
 
 Turn any existing website into a working MCP server so AI assistants can search and use it, not just read it.
 
 ## Status
 
 - Started: 2026-07-11
-- Current state: version 0.1.0 released and deployed. The first live gateway serves asishsingh.in at https://gateway.asishsingh.in/asishsingh.in/mcp (open access, no token yet). All spec milestones done.
+- Current state: version 0.2.0 published to npm as mcp-site-gateway (repo renamed to match, old agent-gateway links redirect). Two live gateways run in production at gateway.asishsingh.in, serving asishsingh.in and freeyoutubetranscribe.com (open access, no token yet). All spec milestones done.
 
 ## Goal
 
@@ -13,7 +13,7 @@ A product Asish can sell through his AI SEO practice. Point it at a client's web
 
 ## How to run it
 
-See the README, npm install, npm run build, then node dist/cli.js build <url> and node dist/cli.js serve <hostname>. npm test runs the suite.
+See the README, npm install, npm run build, then npx mcp-site-gateway build <url> and npx mcp-site-gateway serve <hostname>. npm test runs the suite.
 
 ## Notes for Claude
 

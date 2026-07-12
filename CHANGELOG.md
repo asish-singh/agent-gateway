@@ -2,6 +2,18 @@
 
 All notable changes to this project are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses semantic versioning.
 
+## [0.2.0] - 2026-07-12
+
+### Changed
+
+- Renamed the package to `mcp-site-gateway` and published it to npm, so the whole tool now runs with `npx mcp-site-gateway <command>` and no clone or build step. The GitHub repository moved to the same name (old links redirect).
+- The crawler user agent and the generator field in agents.json now carry the new name.
+
+### Added
+
+- MIT license file.
+- README rewritten for non technical site owners, prerequisites with version checks, expected output after every step, and a troubleshooting section.
+
 ## [0.1.0] - 2026-07-11
 
 ### Added

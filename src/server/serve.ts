@@ -10,7 +10,7 @@ export function resolveGatewayDb(baseDir: string, gateway: string): string {
   for (const candidate of [join(baseDir, hostname, 'index.sqlite'), join(gateway, 'index.sqlite')]) {
     if (existsSync(candidate)) return candidate
   }
-  throw new Error(`No gateway found for "${gateway}". Run agent-gateway build first. Looked in ${join(baseDir, hostname)}.`)
+  throw new Error(`No gateway found for "${gateway}". Run mcp-site-gateway build first. Looked in ${join(baseDir, hostname)}.`)
 }
 
 /** Serve one gateway over stdio, for local use from Claude Code and other MCP clients. */
@@ -18,5 +18,5 @@ export async function serveStdio(dbPath: string): Promise<void> {
   const store = new GatewayStore(dbPath)
   const server = createGatewayServer(store)
   await server.connect(new StdioServerTransport())
-  console.error(`agent-gateway serving ${dbPath} over stdio`)
+  console.error(`mcp-site-gateway serving ${dbPath} over stdio`)
 }

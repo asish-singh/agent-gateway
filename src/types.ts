@@ -12,7 +12,7 @@ export const DEFAULT_CRAWL_OPTIONS: CrawlOptions = {
   maxPages: 500,
   requestIntervalMs: 1000,
   timeoutMs: 15000,
-  userAgent: 'agent-gateway/0.1 (+https://github.com/asish-singh/agent-gateway)',
+  userAgent: 'mcp-site-gateway/0.2 (+https://github.com/asish-singh/mcp-site-gateway)',
 }
 
 export interface ExtractedPage {

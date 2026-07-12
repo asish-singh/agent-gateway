@@ -58,7 +58,7 @@ export function startHttpServer(options: HttpServeOptions): { server: Server; ga
     stores.set(name, new GatewayStore(dbPath))
   }
   if (stores.size === 0) {
-    throw new Error(`No built gateways found in ${options.baseDir}. Run agent-gateway build first.`)
+    throw new Error(`No built gateways found in ${options.baseDir}. Run mcp-site-gateway build first.`)
   }
 
   const server = createServer((req, res) => {
@@ -83,7 +83,7 @@ export function startHttpServer(options: HttpServeOptions): { server: Server; ga
       res.end(
         JSON.stringify(
           {
-            service: 'agent-gateway',
+            service: 'mcp-site-gateway',
             note: 'This is an MCP API for AI assistants, not a website. Connect an MCP client over streamable HTTP to one of the endpoints below.',
             endpoints: [...stores.keys()].map((g) => `/${g}/mcp`),
           },

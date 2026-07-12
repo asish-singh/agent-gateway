@@ -5,7 +5,7 @@ import { buildGateway } from './build.js'
 const program = new Command()
 
 program
-  .name('agent-gateway')
+  .name('mcp-site-gateway')
   .description('Turn any existing website into a working MCP server so AI assistants can search and use it, not just read it.')
   .version('0.1.0')
 
@@ -69,7 +69,7 @@ program
         ...(gateway ? { gateways: [gateway.includes('://') ? new URL(gateway).hostname : gateway] } : {}),
       })
       console.error(
-        `agent-gateway serving ${gateways.length} gateway(s) on http://${opts.host}:${opts.http}, endpoints ${gateways.map((g) => `/${g}/mcp`).join(' ')}${token ? ', bearer token required' : ', open access'}`,
+        `mcp-site-gateway serving ${gateways.length} gateway(s) on http://${opts.host}:${opts.http}, endpoints ${gateways.map((g) => `/${g}/mcp`).join(' ')}${token ? ', bearer token required' : ', open access'}`,
       )
       return
     }

@@ -1,28 +1,39 @@
 {
-  "name": "agent-gateway",
-  "version": "0.1.0",
+  "name": "mcp-site-gateway",
+  "version": "0.2.0",
   "description": "Turn any existing website into a working MCP server so AI assistants can search and use it, not just read it.",
   "main": "index.js",
   "scripts": {
     "test": "vitest run",
     "build": "tsc -p tsconfig.json",
     "lint": "eslint src tests",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "prepublishOnly": "npm run build && npm test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/asish-singh/agent-gateway.git"
+    "url": "git+https://github.com/asish-singh/mcp-site-gateway.git"
   },
-  "keywords": [],
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "ai-agents",
+    "agentic-web",
+    "llms-txt",
+    "agents-json",
+    "website",
+    "crawler",
+    "model-context-protocol"
+  ],
   "author": "",
   "license": "MIT",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/asish-singh/agent-gateway/issues"
+    "url": "https://github.com/asish-singh/mcp-site-gateway/issues"
   },
-  "homepage": "https://github.com/asish-singh/agent-gateway#readme",
+  "homepage": "https://github.com/asish-singh/mcp-site-gateway#readme",
   "bin": {
-    "agent-gateway": "dist/cli.js"
+    "mcp-site-gateway": "dist/cli.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
@@ -46,5 +57,11 @@
   },
   "engines": {
     "node": ">=22.13"
-  }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ]
 }
