@@ -1,5 +1,8 @@
 # mcp-site-gateway
 
+[![npm version](https://img.shields.io/npm/v/mcp-site-gateway.svg)](https://www.npmjs.com/package/mcp-site-gateway)
+[![CI](https://github.com/asish-singh/mcp-site-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/asish-singh/mcp-site-gateway/actions/workflows/ci.yml)
+
 Turn any existing website into a working MCP server so AI assistants can search and use it, not just read it.
 
 Most websites were built for human eyes. AI assistants can read them at best, but they cannot search them properly or extract facts reliably. This tool points at a site, learns its content, and serves it as an MCP server, the standard plug that lets assistants like Claude and ChatGPT work with the site directly.
